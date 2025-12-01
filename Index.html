@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snacks & Bebidas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background-color: #fafafa; margin: 0; padding: 0; color: #333; }
+    header { background: linear-gradient(90deg, #f9d29d, #f2a65a); padding: 1.5rem; text-align: center; }
+    header h1 { margin: 0; font-weight: 600; color: #fff; }
+
+    .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; padding: 2rem; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); padding: 1rem; text-align: center; transition: transform 0.2s ease; }
+    .card:hover { transform: scale(1.02); }
+    .card img { width: 150px; height: auto; border-radius: 8px; margin-bottom: 0.5rem; }
+    .card h3 { margin: 0.5rem 0; font-weight: 600; }
+    .price { font-size: 1.2rem; font-weight: bold; color: #d35400; }
+
+    .faq { padding: 2rem; background: #fff; margin: 1rem; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    .faq h2 { text-align: center; margin-bottom: 1rem; color: #444; }
+    details { margin: 0.5rem 0; padding: 0.8rem; border: 1px solid #eee; border-radius: 8px; background: #fafafa; cursor: pointer; }
+
+    .tips { padding: 2rem; text-align: center; }
+    .tips h2 { margin-bottom: 1rem; color: #444; }
+    .btn { background: #e67e22; color: #fff; border: none; padding: 0.8rem 1.5rem; margin: 0.5rem; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: background 0.3s; }
+    .btn:hover { background: #d35400; }
+    #consejo { margin-top: 1rem; font-size: 1.1rem; color: #333; font-style: italic; }
+
+    .gallery { padding: 2rem; text-align: center; }
+    .gallery h2 { margin-bottom: 1rem; }
+    .carousel-container { position: relative; width: 90%; max-width: 600px; margin: 0 auto; overflow: hidden; }
+    .carousel-container img { width: 100%; height: 400px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; transition: opacity 0.5s ease; }
+    .carousel-container img.active { display: block; }
+
+    .controls { margin-top: 2rem; margin-bottom: 2rem; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .controls button { margin: 0; padding: 0.7rem 1.2rem; font-size: 1.1rem; cursor: pointer; background-color: #e74c3c; color: white; border: none; border-radius: 30px; transition: background-color 0.3s; }
+    .controls button:hover { background-color: #c0392b; }
+
+    .btn-icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.3s, box-shadow 0.3s; }
+    .btn-icon:hover { transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+
+    footer { text-align: center; padding: 1rem; font-size: 0.9rem; color: #fff; background: linear-gradient(90deg, #f9d29d, #f2a65a); }
+    footer .social-icons a img { width: 35px; margin-right: 8px; }
+    footer .footer-buttons button { margin: 0 5px; padding: 0.5rem 1rem; border-radius: 6px; border: none; background: #e67e22; cursor: pointer; }
+    footer .footer-buttons button a { color: #fff; text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .carousel-container { height: 300px; }
+      #foto-titulo { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header><h1>Snacks & Bebidas</h1></header>
+
+  <!-- Menú dinámico -->
+  <section class="menu" id="menu-productos">
+    <!-- Los productos se cargarán aquí desde productos.csv -->
+  </section>
+
+  <!-- ✅ Botón sutil para ir al presupuestador -->
+  <div style="text-align: center; margin: 1rem 0;">
+    <a href="presupuesto.html" style="color: #e67e22; text-decoration: none; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+      </svg>
+      Armar mi pedido
+    </a>
+  </div>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <h2>Preguntas frecuentes</h2>
+    <details><summary>¿Hay WiFi en el departamento?</summary><p>Sí, el alojamiento cuenta con WiFi gratuito de alta velocidad.</p></details>
+    <details><summary>¿Cómo llego desde la terminal?</summary><p>A 10 minutos en taxi o 28 minutos caminando.</p></details>
+    <details><summary>¿El patio es privado?</summary><p>Sí, es exclusivamente para vos.</p></details>
+    <details><summary>Horario de check-in / check-out</summary><p>Check-in desde 14:00 / check-out hasta 10:30.</p></details>
+  </section>
+
+  <!-- Consejos -->
+  <section class="tips">
+    <h2>Lugares para conocer</h2>
+    <button class="btn" onclick="mostrarConsejo('centro')">🏛 Centro Histórico</button>
+    <button class="btn" onclick="mostrarConsejo('parques')">🌳 Parques</button>
+    <button class="btn" onclick="mostrarConsejo('gastronomia')">🍴 Gastronomía</button>
+    <p id="consejo"></p>
+  </section>
+
+  <!-- Galería con carrusel -->
+  <section class="gallery">
+    <h2 id="foto-titulo">Iglesia de los Capuchinos</h2>
+    <div class="carousel-container">
+      <img src="https://i.imgur.com/s27jyiZ.png" alt="Iglesia de los Capuchinos" class="active">
+      <img src="https://i.imgur.com/z03GRgc.jpeg" alt="Paseo Marqués de Sobremonte">
+      <img src="https://i.imgur.com/r3zaygQ.jpeg" alt="Puente 450 aniversario">
+      <img src="https://i.imgur.com/pjiscNV.jpeg" alt="Barrio Guemes">
+      <img src="https://i.imgur.com/5uWUsdQ.jpeg" alt="Histórico Mirador del Parque Sarmiento">
+      <img src="https://i.imgur.com/XHxxO7P.jpeg" alt="Paseo del Buen Pastor">
+      <img src="https://i.imgur.com/TO7RxhL.jpeg" alt="Iglesia de la Compañía de Jesús">
+    </div>
+    <div class="controls">
+      <button onclick="cambiarFoto(-1)">⬅ Anterior</button>
+      <button onclick="cambiarFoto(1)">Siguiente ➡</button>
+
+      <a id="btn-instagram" href="#" target="_blank" title="Ver Reel en Instagram">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" style="width: 35px; border-radius: 50%;">
+      </a>
+
+      <a id="btn-google-maps" href="#" target="_blank" title="Ver en Google Maps">
+        <img src="https://img.icons8.com/color/48/000000/google-maps.png" alt="Google Maps" style="width: 35px; border-radius: 50%;">
+      </a>
+    </div>
+  </section>
+
+  <script>
+    let currentIndex = 0;
+    const imagenes = document.querySelectorAll('.carousel-container img');
+    const titulo = document.getElementById('foto-titulo');
+
+    const enlacesInfo = [
+      'https://www.instagram.com/reel/C32pHyUuuYR/?igsh=MTk4bng4MzR2dG9kaw==',
+      'https://www.instagram.com/reel/Cum4wC4ATuY/?igsh=MWE0b21icjZucjh2ZA==',
+      'https://www.instagram.com/reel/C0JMeNaO7cF/?igsh=MWc3M3NsMHhkZ2dzdg==',
+      'https://www.instagram.com/reel/CgVNGrOgk_0/?igsh=NzZ3dDI1MWRiOW5v',
+      'https://www.instagram.com/reel/CXcCgUCjyuh/?igsh=MXNwaTUxZWQ2aXhmcg==',
+      'https://www.instagram.com/p/CM0SRQBnUti/?igsh=Zm84aHlycmxnZDE3g',
+      'https://www.instagram.com/reel/DKZjlQARpHC/?igsh=MTlmOXVqeXM4ZmZ5cg=='
+    ];
+
+    function actualizarTitulo() {
+      const lugar = imagenes[currentIndex].alt;
+      titulo.textContent = lugar;
+      document.getElementById('btn-instagram').href = enlacesInfo[currentIndex];
+
+      let linkMaps = "https://www.google.com/maps/search/" + encodeURIComponent(lugar + " Córdoba");
+      const lugarLower = lugar.toLowerCase();
+      if(lugarLower.includes("puente 450")) {
+        linkMaps = "https://www.google.com.ar/maps/place/Puente+450%C2%BA+Aniversario+(Puente+Peatonal+Parque+Las+Heras+-+Elisa)/@-31.4065471,-64.1869528,17z/data=!3m1!4b1!4m6!3m5!1s0x9432992488c8806b:0xd716e7f4617a15b3!8m2!3d-31.4065471!4d-64.1843779!16s%2Fg%2F11vc3952gq?entry=ttu";
+      } else if(lugarLower.includes("mirador") && lugarLower.includes("sarmiento")) {
+        linkMaps = "https://www.google.com/maps/place/Mirador+del+Parque+Sarmiento/@-31.4259395,-64.1778692,17z/data=!3m1!4b1!4m6!3m5!1s0x9432a2915aad2ca5:0x2609e2343fc6d9a0!8m2!3d-31.4259395!4d-64.1778692!16s%2Fg%2F11c3wv560j?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D";
+      } else if(lugarLower.includes("guemes")) {
+        linkMaps = "https://www.google.com/maps/place/Belgrano+900,X5000JQR+C%C3%B3rdoba/@-31.425248,-64.1953664,17z";
+      }
+      document.getElementById('btn-google-maps').href = linkMaps;
+    }
+
+    function cambiarFoto(direccion) {
+      imagenes[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex + direccion + imagenes.length) % imagenes.length;
+      imagenes[currentIndex].classList.add('active');
+      actualizarTitulo();
+    }
+
+    setInterval(() => {
+      cambiarFoto(1);
+    }, 5000);
+    actualizarTitulo();
+
+    function mostrarConsejo(tipo) {
+      const mensajes = {
+        centro: "Visitá la Catedral, la Plaza San Martín y la Manzana Jesuítica.",
+        parques: "Disfrutá del Parque Sarmiento o caminá por la Costanera.",
+        gastronomia: "No te pierdas las empanadas cordobesas y un buen fernet con coca 😉."
+      };
+      document.getElementById("consejo").innerText = mensajes[tipo] || "";
+    }
+
+    // === CARGA DINÁMICA DE PRODUCTOS ===
+    async function cargarProductos() {
+      try {
+        const response = await fetch('data/productos.csv');
+        const text = await response.text();
+        const lines = text.split('\n').filter(line => line.trim() !== '');
+        const headers = lines[0].split(',').map(h => h.trim());
+        const productos = [];
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim().replace(/^"(.*)"$/, '$1'));
+          const prod = {};
+          headers.forEach((header, idx) => {
+            if (header === 'precio') {
+              prod[header] = parseInt(values[idx]) || 0;
+            } else {
+              prod[header] = values[idx] || '';
+            }
+          });
+          productos.push(prod);
+        }
+        return productos;
+      } catch (err) {
+        console.error('⚠️ Error al cargar productos.csv:', err);
+        return [];
+      }
+    }
+
+    function renderizarMenu(productos) {
+      const contenedor = document.getElementById('menu-productos');
+      contenedor.innerHTML = '';
+      productos.forEach(prod => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${prod.img}" alt="${prod.nombre}">
+          <h3>${prod.nombre}</h3>
+          <p class="price">$${prod.precio.toLocaleString()}</p>
+        `;
+        contenedor.appendChild(card);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const productos = await cargarProductos();
+      renderizarMenu(productos);
+    });
+  </script>
+
+  <footer>
+    <p>Dirección: Humberto Primo 118, Barrio Centro, Córdoba</p>
+    <div class="social-icons">
+      <a href="https://wa.me/5493513814202?text=👋%20Hola%20😊%20Quer%C3%ADa%20hacerte%20una%20consulta%20sobre%20tus%20productos%20💎" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+      </a>
+      <a href="https://www.google.com/maps/place/Humberto+1%C2%BA+118,X5000FAD+C%C3%B3rdoba/@-31.4096239,-64.1879432,17z/data=!3m1!4b1!4m6!3m5!1s0x9432987781bb1cf3:0xb5f0023ae1601f0!8m2!3d-31.409624!4d-64.1830723!16s%2Fg%2F11rhs52bkc?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D" target="_blank">
+        <img src="https://img.icons8.com/color/48/000000/google-maps.png" alt="Google Maps" style="width: 35px;">
+      </a>
+    </div>
+  </footer>
+</body>
+</html>
