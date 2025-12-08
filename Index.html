@@ -173,45 +173,55 @@ async function cargarProductos() {
     const response = await fetch(url);
     const text = await response.text();
 
-    // Parser mejorado para manejar comillas en CSV
-    function parseCSV(csv) {
-      const lines = csv.split('\n').filter(line => line.trim() !== '');
-      const headers = lines[0].split(',').map(h => h.trim());
-      const products = [];
+    // ✅ Parser robusto para CSV con comillas
+    const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
+    if (lines.length < 2) return [];
 
-      for (let i = 1; i < lines.length; i++) {
-        const row = [];
-        let current = '';
-        let inQuotes = false;
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"(.*)"$/, '$1'));
+    const productos = [];
 
-        for (let char of lines[i]) {
-          if (char === '"') {
-            inQuotes = !inQuotes;
-          } else if (char === ',' && !inQuotes) {
-            row.push(current.trim());
-            current = '';
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      const fields = [];
+      let insideQuotes = false;
+      let currentField = '';
+
+      for (let j = 0; j < line.length; j++) {
+        const char = line[j];
+        const nextChar = line[j + 1];
+
+        if (char === '"') {
+          if (insideQuotes && nextChar === '"') {
+            // "" → comilla escapada
+            currentField += '"';
+            j++; // saltar el siguiente "
           } else {
-            current += char;
+            insideQuotes = !insideQuotes;
           }
+        } else if (char === ',' && !insideQuotes) {
+          fields.push(currentField.trim().replace(/^"(.*)"$/, '$1'));
+          currentField = '';
+        } else {
+          currentField += char;
         }
-        row.push(current.trim());
-
-        const product = {};
-        headers.forEach((header, idx) => {
-          if (header === 'precio' || header === 'stock') {
-            product[header] = parseInt(row[idx]) || 0;
-          } else {
-            product[header] = row[idx] || '';
-          }
-        });
-        products.push(product);
       }
-      return products;
-    }
+      fields.push(currentField.trim().replace(/^"(.*)"$/, '$1'));
 
-    return parseCSV(text);
+      const prod = {};
+      headers.forEach((header, idx) => {
+        if (header === 'precio' || header === 'stock') {
+          prod[header] = parseInt(fields[idx]) || 0;
+        } else {
+          prod[header] = fields[idx] || '';
+        }
+      });
+      productos.push(prod);
+    }
+    return productos;
   } catch (err) {
-    console.error('⚠️ Error al cargar productos desde Google Sheets:', err);
+    console.error('⚠️ Error al cargar productos:', err);
     return [];
   }
 }
