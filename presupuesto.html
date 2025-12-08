@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Presupuesto - Snacks & Bebidas</title>
-  <link href="https://script.google.com/macros/s/AKfycbwgk2TqHuiwK9U-tzxRaXspJCEnktLczMFwtRRHC97KnF6sHcxvFRpS1DKBw5ce94NkHw/exec" rel="stylesheet">
   <style>     
     body {
       font-family: 'Montserrat', sans-serif;
@@ -169,7 +168,7 @@
 async function cargarProductos() {
   try {
     // 🔗 URL pública de tu hoja en formato CSV
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ.../pub?output=csv'; // 👈 PEGÁ ACÁ TU URL
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSIPWx2NrsBzHVVegawYOzdgT8bAmRpFvPBIGGMw3rK9Cn_6fXlaiwYoUxieq5E3mYtEotCU53zQatn/pub?gid=0&single=true&output=csv'; // 👈 PEGÁ ACÁ TU URL
     const response = await fetch(url);
     const text = await response.text();
 
