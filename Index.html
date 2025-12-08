@@ -167,32 +167,54 @@
     }
 
     // === CARGA DINÁMICA DE PRODUCTOS ===
-    async function cargarProductos() {
-      try {
-        const response = await fetch('data/productos.csv');
-        const text = await response.text();
-        const lines = text.split('\n').filter(line => line.trim() !== '');
-        const headers = lines[0].split(',').map(h => h.trim());
-        const productos = [];
-        for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(',').map(v => v.trim().replace(/^"(.*)"$/, '$1'));
-          const prod = {};
-          headers.forEach((header, idx) => {
-            if (header === 'precio') {
-              prod[header] = parseInt(values[idx]) || 0;
-            } else {
-              prod[header] = values[idx] || '';
-            }
-          });
-          productos.push(prod);
+async function cargarProductos() {
+  try {
+    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSIPWx2NrsBzHVVegawYOzdgT8bAmRpFvPBIGGMw3rK9Cn_6fXlaiwYoUxieq5E3mYtEotCU53zQatn/pub?output=csv';
+    const response = await fetch(url);
+    const text = await response.text();
+
+    // Parser mejorado para manejar comillas en CSV
+    function parseCSV(csv) {
+      const lines = csv.split('\n').filter(line => line.trim() !== '');
+      const headers = lines[0].split(',').map(h => h.trim());
+      const products = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let char of lines[i]) {
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            row.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
         }
-        return productos;
-      } catch (err) {
-        console.error('⚠️ Error al cargar productos.csv:', err);
-        return [];
+        row.push(current.trim());
+
+        const product = {};
+        headers.forEach((header, idx) => {
+          if (header === 'precio' || header === 'stock') {
+            product[header] = parseInt(row[idx]) || 0;
+          } else {
+            product[header] = row[idx] || '';
+          }
+        });
+        products.push(product);
       }
+      return products;
     }
 
+    return parseCSV(text);
+  } catch (err) {
+    console.error('⚠️ Error al cargar productos desde Google Sheets:', err);
+    return [];
+  }
+}
     function renderizarMenu(productos) {
       const contenedor = document.getElementById('menu-productos');
       contenedor.innerHTML = '';
