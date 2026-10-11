@@ -27,6 +27,28 @@ exports.handler = async (event) => {
 
   try {
     const data = JSON.parse(event.body || "{}");
+    if (data.accion === "verificarConexion") {
+  const respuesta = await fetch(scriptUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "text/plain;charset=utf-8"
+    },
+    body: JSON.stringify({
+      apiKey,
+      accion: "verificarConexion"
+    }),
+    redirect: "follow",
+    signal: AbortSignal.timeout(20000)
+  });
+
+  if (!respuesta.ok) {
+    throw new Error("Error de conexión con Apps Script");
+  }
+
+  const resultado = await respuesta.json();
+
+  return responder(resultado.success ? 200 : 502, resultado);
+}
 
     if (
       typeof data.pedidoId !== "string" ||
