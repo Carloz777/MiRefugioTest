@@ -159,226 +159,254 @@
       <div class="action-buttons">
         <button class="btn btn-copiar" onclick="copiarTotal()">📋 Copiar Total</button>
         <button class="btn btn-reiniciar" onclick="reiniciarPresupuesto()">🗑️ Reiniciar</button>
-        <button class="btn btn-whatsapp" onclick="enviarPorWhatsApp()">📲 Enviar por WhatsApp</button>
+        <button
+                id="btn-confirmar"
+                class="btn btn-whatsapp"
+                onclick="enviarPorWhatsApp()">
+                🛒 Confirmar pedido por WhatsApp
+        </button>
+              <p id="mensaje-stock"
+        style="display:none; color:#c0392b; margin-top:12px; text-align:center;">
+        😔📦 ¡Ups! Nos quedamos sin stock.<br>
+        🙏 Disculpá las molestias.<br>
+        💙 ¡Gracias por elegir MiRefugio! 🌿✨
+      </p>
       </div>
     </div>
   </section>
 
-  <script>
-    // === CARGA DINÁMICA DE PRODUCTOS ===
-    async function cargarProductos() {
-  try {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSIPWx2NrsBzHVVegawYOzdgT8bAmRpFvPBIGGMw3rK9Cn_6fXlaiwYoUxieq5E3mYtEotCU53zQatn/pub?output=csv';
-    const response = await fetch(url);
-    const text = await response.text();
+  
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIPWx2NrsBzHVVegawYOzdgT8bAmRpFvPBIGGMw3rK9Cn_6fXlaiwYoUxieq5E3mYtEotCU53zQatn/pub?output=csv";
 
-    // ✅ Parser robusto para CSV con comillas
-    const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');
-    if (lines.length < 2) return [];
+let productos = [];
+let carrito = {};
 
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"(.*)"$/, '$1'));
-    const productos = [];
+function leerCSV(texto) {
+  const filas = [];
+  let fila = [], campo = "", comillas = false;
 
-    for (let i = 1; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
 
-      const fields = [];
-      let insideQuotes = false;
-      let currentField = '';
-
-      for (let j = 0; j < line.length; j++) {
-        const char = line[j];
-        const nextChar = line[j + 1];
-
-        if (char === '"') {
-          if (insideQuotes && nextChar === '"') {
-            // "" → comilla escapada
-            currentField += '"';
-            j++; // saltar el siguiente "
-          } else {
-            insideQuotes = !insideQuotes;
-          }
-        } else if (char === ',' && !insideQuotes) {
-          fields.push(currentField.trim().replace(/^"(.*)"$/, '$1'));
-          currentField = '';
-        } else {
-          currentField += char;
-        }
+    if (c === '"') {
+      if (comillas && texto[i + 1] === '"') {
+        campo += '"';
+        i++;
+      } else {
+        comillas = !comillas;
       }
-      fields.push(currentField.trim().replace(/^"(.*)"$/, '$1'));
-
-      const prod = {};
-      headers.forEach((header, idx) => {
-        if (header === 'precio' || header === 'stock') {
-          prod[header] = parseInt(fields[idx]) || 0;
-        } else {
-          prod[header] = fields[idx] || '';
-        }
-      });
-      productos.push(prod);
+    } else if (c === ',' && !comillas) {
+      fila.push(campo);
+      campo = "";
+    } else if ((c === '\n' || c === '\r') && !comillas) {
+      if (c === '\r' && texto[i + 1] === '\n') i++;
+      fila.push(campo);
+      filas.push(fila);
+      fila = [];
+      campo = "";
+    } else {
+      campo += c;
     }
-    return productos;
-  } catch (err) {
-    console.error('⚠️ Error al cargar productos:', err);
-    return [];
+  }
+
+  if (campo || fila.length) {
+    fila.push(campo);
+    filas.push(fila);
+  }
+
+  return filas;
+}
+
+async function cargarProductos() {
+  const contenedor = document.getElementById("lista-productos");
+  contenedor.textContent = "Cargando productos...";
+
+  try {
+    const respuesta = await fetch(CSV_URL, { cache: "no-store" });
+    if (!respuesta.ok) throw new Error("No se pudo leer Google Sheets");
+
+    const filas = leerCSV(await respuesta.text());
+    const encabezados = filas.shift().map(x => x.trim().toLowerCase());
+
+    const col = nombre => encabezados.indexOf(nombre);
+
+    if (["nombre", "precio", "img", "stock"].some(x => col(x) < 0)) {
+      throw new Error("Faltan columnas en Google Sheets");
+    }
+
+    productos = filas
+      .filter(f => f[col("nombre")]?.trim())
+      .map(f => ({
+        nombre: f[col("nombre")].trim(),
+        precio: Number(f[col("precio")]),
+        img: f[col("img")].trim(),
+        stock: Number(f[col("stock")])
+      }));
+
+    if (productos.some(p =>
+      !Number.isFinite(p.precio) || p.precio < 0 ||
+      !Number.isInteger(p.stock) || p.stock < 0
+    )) {
+      throw new Error("Hay precios o cantidades de stock inválidos");
+    }
+
+    carrito = {};
+    dibujarProductos();
+    actualizarTotal();
+
+  } catch (error) {
+    contenedor.textContent = "Error al cargar productos: " + error.message;
+    console.error(error);
   }
 }
 
-    let productos = [];
-    let carrito = {};
+function dibujarProductos() {
+  const contenedor = document.getElementById("lista-productos");
+  contenedor.innerHTML = "";
 
-    function renderizarPresupuesto() {
-      const contenedor = document.getElementById('lista-productos');
-      contenedor.innerHTML = '';
+  productos.forEach((prod, index) => {
+    const div = document.createElement("div");
+    div.className = "prod-card";
 
-      productos.forEach((prod, index) => {
-        const div = document.createElement('div');
-        div.className = 'prod-card';
-        div.innerHTML = `
-          <img src="${prod.img}" alt="${prod.nombre}">
-          <strong>${prod.nombre}</strong>
-          <div class="precio">$${prod.precio.toLocaleString()}</div>
-          <div class="qty-controls">
-            <button class="qty-btn" onclick="cambiarCantidad(${index}, -1)">−</button>
-            <span id="cantidad-${index}" class="qty-display">0</span>
-            <button class="qty-btn plus" onclick="cambiarCantidad(${index}, 1)">+</button>
-          </div>
-        `;
-        contenedor.appendChild(div);
-      });
-    }
+    const img = document.createElement("img");
 
-    function cambiarCantidad(index, delta) {
-      const key = `prod-${index}`;
-      carrito[key] = (carrito[key] || 0) + delta;
-      if (carrito[key] < 0) carrito[key] = 0;
-      document.getElementById(`cantidad-${index}`).textContent = carrito[key];
-      actualizarTotal();
-    }
+const imagenesLocales = {
+  "Coca Cola lata 354ml": "coca-cola.png",
+  "Agua Mineral Natural 500 ml": "Agua- 500ml.png",
+  "Pepsi Black 354ml": "pepsi - Black.png",
+  "Bizcocho 9 de oro": "9 de oro.png",
+  "Ramen Korean": "Ramean.png",
+  "Guarraziani de 2 litros": "Agua 2 litros.png",
+  "Papas fritas": "papas quento.png",
+  "Cerveza Imperial GOLDEN": "cerveza Golden.png",
+  "Gaseosa Pepsi 2 litros": "pepsi 2 Litrod.png",
+  "Cerveza Stella Artois-473cc": "Cerveza Stella.png",
+  "Agua Tónica 269ml": "paso de los toros.png"
+};
 
-    function actualizarTotal() {
-      let total = 0;
-      Object.keys(carrito).forEach(key => {
-        const index = parseInt(key.split('-')[1]);
-        total += (carrito[key] * productos[index].precio);
-      });
-      document.getElementById('total-presupuesto').textContent = `$${total.toLocaleString()}`;
-    }
+const archivoImagen = imagenesLocales[prod.nombre.trim()];
 
-    function reiniciarPresupuesto() {
-      if (confirm("¿Seguro que querés reiniciar el presupuesto?")) {
-        carrito = {};
-        renderizarPresupuesto();
-        actualizarTotal();
-      }
-    }
+img.src = archivoImagen
+  ? "imagenes/" + archivoImagen
+  : prod.img;
 
-    function copiarTotal() {
-      const total = document.getElementById('total-presupuesto').textContent;
-      navigator.clipboard.writeText(total).then(() => {
-        alert('✅ Total copiado: ' + total);
-      }).catch(() => {
-        alert('⚠️ No se pudo copiar. Intenta seleccionar y copiar manualmente.');
-      });
-    }
+    img.onerror = () => {
+  console.error("No se pudo cargar la imagen:", img.src);
+};
+    img.alt = prod.nombre;
 
-    function enviarPorWhatsApp() {
-      let mensaje = "Hola! Este es el detalle de tu consumo del frigobar ☺️:\n\n";
-      let total = 0;
-      let hayProductos = false;
+    const nombre = document.createElement("strong");
+    nombre.textContent = prod.nombre;
 
-      const emojis = {
-        "Coca Cola": "🥤",
-        "Pepsi": "🥤",
-        "Guarraziani": "🧃",
-        "Bebida coreana": "🇰🇷",
-        "Papas fritas": "🍟",
-        "Agua Mineral": "💧",
-        "Galletas": "🍪",
-        "Club Social": "🍪",
-        "Ramen": "🍜"
-      };
+    const precio = document.createElement("div");
+    precio.className = "precio";
+    precio.textContent = "$" + prod.precio.toLocaleString("es-AR");
 
-      Object.keys(carrito).forEach(key => {
-        const index = parseInt(key.split('-')[1]);
-        const cantidad = carrito[key];
-        if (cantidad > 0) hayProductos = true;
-      });
+    const stock = document.createElement("small");
+    stock.textContent = prod.stock > 0
+      ? "Disponible: " + prod.stock
+      : "Sin stock";
 
-      if (!hayProductos) {
-        alert("No seleccionaste ningún producto.");
-        return;
-      }
+    const controles = document.createElement("div");
+    controles.className = "qty-controls";
 
-      Object.keys(carrito).forEach(key => {
-        const index = parseInt(key.split('-')[1]);
-        const cantidad = carrito[key];
-        if (cantidad > 0) {
-          const prod = productos[index];
-          const subtotal = cantidad * prod.precio;
-          let emoji = "✨";
-          for (let clave in emojis) {
-            if (prod.nombre.toLowerCase().includes(clave.toLowerCase())) {
-              emoji = emojis[clave];
-              break;
-            }
-          }
-          mensaje += `${emoji} ${cantidad}x ${prod.nombre} → $${subtotal.toLocaleString()}\n`;
-          total += subtotal;
-        }
-      });
+    const menos = document.createElement("button");
+    menos.className = "qty-btn";
+    menos.textContent = "−";
+    menos.onclick = () => cambiarCantidad(index, -1);
 
-      mensaje += `\n💰 Total: $${total.toLocaleString()}\n\n`;
-      mensaje += "💙 Gracias por disfrutar de tu estadía con nosotros.\n";
-      mensaje += "¡Esperamos que hayas disfrutado cada momento! 🌿✨";
+    const cantidad = document.createElement("span");
+    cantidad.id = "cantidad-" + index;
+    cantidad.className = "qty-display";
+    cantidad.textContent = "0";
 
-      if (!confirm("¿Confirmás este consumo? Se descontará del inventario.")) {
-        return;
-      }
+    const mas = document.createElement("button");
+    mas.className = "qty-btn plus";
+    mas.textContent = "+";
+    mas.disabled = prod.stock === 0;
+    mas.onclick = () => cambiarCantidad(index, 1);
 
-      const API_URL = 'https://script.google.com/macros/s/AKfycbygdjYh3maqEAfb-R-9tjcbVw0pt2Co64Bv0aPfABRGH8IliZR3i54R1_YCgpFzRzFPqw/exec';
+    controles.append(menos, cantidad, mas);
+    div.append(img, nombre, precio, stock, controles);
+    contenedor.appendChild(div);
+  });
+}
 
-      const promesas = Object.keys(carrito).map(key => {
-        const index = parseInt(key.split('-')[1]);
-        const cantidad = carrito[key];
-        if (cantidad <= 0) return Promise.resolve();
+function cambiarCantidad(index, delta) {
+  const actual = carrito[index] || 0;
+  const nueva = actual + delta;
 
-        return fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ index, cantidad })
-        }).then(res => {
-          if (!res.ok) throw new Error('Error en la respuesta del servidor');
-          return res.json();
-        }).then(data => {
-          if (data.error) throw new Error(data.error);
-        });
-      });
+  if (nueva < 0) return;
 
-      Promise.all(promesas)
-        .then(() => {
-          const telefono = "5493513814202";
-          const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
-          window.open(url, '_blank');
+  if (nueva > productos[index].stock) {
+    alert("No hay suficiente stock de " + productos[index].nombre);
+    return;
+  }
 
-          carrito = {};
-          renderizarPresupuesto();
-          actualizarTotal();
+  carrito[index] = nueva;
+  document.getElementById("cantidad-" + index).textContent = nueva;
+  actualizarTotal();
+}
 
-          alert("✅ Consumo registrado y stock actualizado.");
-        })
-        .catch(err => {
-          console.error("Error al actualizar stock:", err);
-          alert("⚠️ Error al actualizar el inventario:\n" + (err.message || "Ver consola del navegador"));
-        });
-    }
+function actualizarTotal() {
+  const total = productos.reduce((suma, p, i) =>
+    suma + p.precio * (carrito[i] || 0), 0);
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      productos = await cargarProductos();
-      renderizarPresupuesto();
-      actualizarTotal();
-    });
-  </script>
+  document.getElementById("total-presupuesto").textContent =
+    "$" + total.toLocaleString("es-AR");
+}
+
+function reiniciarPresupuesto() {
+  if (confirm("¿Seguro que querés reiniciar el presupuesto?")) {
+    carrito = {};
+    dibujarProductos();
+    actualizarTotal();
+  }
+}
+
+async function copiarTotal() {
+  try {
+    const total = document.getElementById("total-presupuesto").textContent;
+    await navigator.clipboard.writeText(total);
+    alert("✅ Total copiado: " + total);
+  } catch {
+    alert("No se pudo copiar el total.");
+  }
+}
+
+function enviarPorWhatsApp() {
+  const seleccionados = productos
+    .map((p, i) => ({ ...p, cantidad: carrito[i] || 0 }))
+    .filter(p => p.cantidad > 0);
+
+  if (!seleccionados.length) {
+    alert("No seleccionaste ningún producto.");
+    return;
+  }
+
+  const total = seleccionados.reduce(
+    (suma, p) => suma + p.precio * p.cantidad, 0
+  );
+
+  let mensaje = "Hola! Este es el detalle de tu consumo del frigobar ☺️:\n\n";
+
+  seleccionados.forEach(p => {
+    mensaje += `🛒 ${p.cantidad}x ${p.nombre} → $${(p.precio * p.cantidad).toLocaleString("es-AR")}\n`;
+  });
+
+  mensaje += `\n💰 Total: $${total.toLocaleString("es-AR")}\n\n`;
+  mensaje += "💙 Gracias por disfrutar de tu estadía con nosotros.\n";
+  mensaje += "¡Esperamos que hayas disfrutado cada momento! 🌿✨";
+
+  const telefono = "5493513814202";
+  const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
+
+  window.open(url, "_blank");
+}
+
+document.addEventListener("DOMContentLoaded", cargarProductos);
+</script>
+
 </body>
 </html>
