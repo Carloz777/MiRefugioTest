@@ -12,7 +12,10 @@ exports.handler = async (event) => {
   });
 
   if (event.httpMethod !== "POST") {
-    return responder(405, { success: false, error: "Método no permitido" });
+    return responder(405, {
+      success: false,
+      error: "Método no permitido"
+    });
   }
 
   const scriptUrl = process.env.MIREFUGIO_SCRIPT_URL;
@@ -27,32 +30,11 @@ exports.handler = async (event) => {
 
   try {
     const data = JSON.parse(event.body || "{}");
-    if (data.accion === "verificarConexion") {
-  const respuesta = await fetch(scriptUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain;charset=utf-8"
-    },
-    body: JSON.stringify({
-      apiKey,
-      accion: "verificarConexion"
-    }),
-    redirect: "follow",
-    signal: AbortSignal.timeout(20000)
-  });
-
-  if (!respuesta.ok) {
-    throw new Error("Error de conexión con Apps Script");
-  }
-
-  const resultado = await respuesta.json();
-
-  return responder(resultado.success ? 200 : 502, resultado);
-}
 
     if (
       typeof data.pedidoId !== "string" ||
       !data.pedidoId.trim() ||
+      data.pedidoId.trim().length > 100 ||
       !Array.isArray(data.items) ||
       data.items.length === 0 ||
       data.items.length > 50
@@ -64,8 +46,8 @@ exports.handler = async (event) => {
     }
 
     const items = data.items.map((item) => ({
-      nombre: item.nombre,
-      cantidad: item.cantidad
+      nombre: item?.nombre,
+      cantidad: item?.cantidad
     }));
 
     for (const item of items) {
@@ -84,9 +66,22 @@ exports.handler = async (event) => {
       }
     }
 
+    // Evitar productos repetidos en un mismo pedido.
+    const nombres = items.map(item => item.nombre.trim());
+
+    if (new Set(nombres).size !== nombres.length) {
+      return responder(400, {
+        success: false,
+        error: "El pedido contiene productos repetidos"
+      });
+    }
+
+    // Enviar el pedido validado a Google Apps Script TEST.
     const respuesta = await fetch(scriptUrl, {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
       body: JSON.stringify({
         apiKey,
         pedidoId: data.pedidoId.trim(),

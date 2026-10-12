@@ -177,10 +177,7 @@
 
   
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSIPWx2NrsBzHVVegawYOzdgT8bAmRpFvPBIGGMw3rK9Cn_6fXlaiwYoUxieq5E3mYtEotCU53zQatn/pub?output=csv";
-
-let productos = [];
-let carrito = {};
+const CSV_URL = const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHMND5tQIG37ZrUiI0Edt14x6Fx0qKIgMLGz1mIbq_F6V6YB4SwJVppEFrJV2m-5P1eEV63eLjuyuL/pub?gid=0&single=true&output=csv";
 
 function leerCSV(texto) {
   const filas = [];
@@ -334,6 +331,7 @@ img.src = archivoImagen
 }
 
 function cambiarCantidad(index, delta) {
+   if (pedidoEnProceso) return;
   const actual = carrito[index] || 0;
   const nueva = actual + delta;
 
@@ -344,9 +342,13 @@ function cambiarCantidad(index, delta) {
     return;
   }
 
-  carrito[index] = nueva;
-  document.getElementById("cantidad-" + index).textContent = nueva;
-  actualizarTotal();
+carrito[index] = nueva;
+
+// Si cambia el carrito, el próximo pedido tendrá un ID nuevo.
+window.pedidoIdPendiente = null;
+
+document.getElementById("cantidad-" + index).textContent = nueva;
+actualizarTotal();
 }
 
 function actualizarTotal() {
@@ -358,8 +360,14 @@ function actualizarTotal() {
 }
 
 function reiniciarPresupuesto() {
+  if (pedidoEnProceso) {
+    alert("⏳ Estamos confirmando tu pedido. Esperá un momento.");
+    return;
+  }
+
   if (confirm("¿Seguro que querés reiniciar el presupuesto?")) {
     carrito = {};
+    window.pedidoIdPendiente = null;
     dibujarProductos();
     actualizarTotal();
   }
@@ -375,7 +383,11 @@ async function copiarTotal() {
   }
 }
 
-function enviarPorWhatsApp() {
+let pedidoEnProceso = false;
+
+async function enviarPorWhatsApp() {
+  if (pedidoEnProceso) return;
+
   const seleccionados = productos
     .map((p, i) => ({ ...p, cantidad: carrito[i] || 0 }))
     .filter(p => p.cantidad > 0);
@@ -402,7 +414,63 @@ function enviarPorWhatsApp() {
   const telefono = "5493513814202";
   const url = `https://api.whatsapp.com/send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
 
-  window.open(url, "_blank");
+  // Abrimos la pestaña desde el clic para evitar bloqueos del navegador.
+  const ventanaWhatsApp = window.open("", "_blank");
+
+  pedidoEnProceso = true;
+
+ if (!window.pedidoIdPendiente) {
+  window.pedidoIdPendiente = crypto.randomUUID();
+}
+const pedidoId = window.pedidoIdPendiente;
+
+  try {
+    const respuesta = await fetch("/.netlify/functions/confirmar-pedido", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        pedidoId,
+        items: seleccionados.map(p => ({
+          nombre: p.nombre,
+          cantidad: p.cantidad
+        }))
+      })
+    });
+
+    const resultado = await respuesta.json();
+
+    if (!respuesta.ok || !resultado.success) {
+      throw new Error(resultado.error || "No se pudo confirmar el pedido.");
+    }
+
+if (ventanaWhatsApp) {
+  ventanaWhatsApp.location.href = url;
+} else {
+  window.location.href = url;
+}
+
+// El pedido fue confirmado: liberar su identificador.
+window.pedidoIdPendiente = null;
+
+// Vaciar el carrito y actualizar la pantalla.
+carrito = {};
+dibujarProductos();
+actualizarTotal();
+
+  } catch (error) {
+    if (ventanaWhatsApp) ventanaWhatsApp.close();
+
+    alert(
+      "😔📦 ¡Ups! No pudimos confirmar tu pedido.\n\n" +
+      error.message +
+      "\n\n🙏 Disculpá las molestias.\n" +
+      "💙 ¡Gracias por elegir MiRefugio! 🌿✨"
+    );
+  } finally {
+    pedidoEnProceso = false;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", cargarProductos);
