@@ -392,10 +392,14 @@ async function enviarPorWhatsApp() {
     .map((p, i) => ({ ...p, cantidad: carrito[i] || 0 }))
     .filter(p => p.cantidad > 0);
 
-  if (!seleccionados.length) {
-    alert("No seleccionaste ningún producto.");
-    return;
-  }
+const confirmar = confirm(
+  "🛒 ¿Confirmás que consumiste estos productos?\n\n" +
+  "Al aceptar, el consumo quedará registrado y " +
+  "se descontará del stock.\n\n" +
+  "Después se abrirá WhatsApp con el detalle."
+);
+
+if (!confirmar) return;
 
   const total = seleccionados.reduce(
     (suma, p) => suma + p.precio * p.cantidad, 0
