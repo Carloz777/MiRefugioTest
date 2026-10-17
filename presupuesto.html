@@ -175,10 +175,9 @@
     </div>
   </section>
 
-  
+  <script src="config.js"></script>
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTHMND5tQIG37ZrUiI0Edt14x6Fx0qKIgMLGz1mIbq_F6V6YB4SwJVppEFrJV2m-5P1eEV63eLjuyuL/pub?gid=0&single=true&output=csv";
-
+const CSV_URL = CONFIG.CSV_URL;
 function leerCSV(texto) {
   const filas = [];
   let fila = [], campo = "", comillas = false;
