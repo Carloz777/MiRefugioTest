@@ -113,6 +113,7 @@
     </div>
   </section>
 
+ <script src="config.js"></script> 
   <script>
     let currentIndex = 0;
     const imagenes = document.querySelectorAll('.carousel-container img');
@@ -169,8 +170,8 @@
     // === CARGA DINÁMICA DE PRODUCTOS ===
 async function cargarProductos() {
   try {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSIPWx2NrsBzHVVegawYOzdgT8bAmRpFvPBIGGMw3rK9Cn_6fXlaiwYoUxieq5E3mYtEotCU53zQatn/pub?output=csv';
-    const response = await fetch(url);
+    const url = CONFIG.CSV_URL;
+    const response = await fetch(url, { cache: "no-store" });
     const text = await response.text();
 
     // ✅ Parser robusto para CSV con comillas
