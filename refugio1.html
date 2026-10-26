@@ -90,6 +90,21 @@ body{background:#fff8f0;color:#452b1c}header{background:linear-gradient(110deg,#
 #snack{scroll-margin-top:80px}.menu .card{scroll-margin-top:100px}.menu .card:target{outline:3px solid #e96b16;outline-offset:3px}
 @media(max-width:560px){.snack-showcase{margin:18px 12px;padding:16px 12px}.snack-stage{gap:9px}.snack-tile{padding:12px 6px}.snack-tile img{height:95px}.snack-tile h3{font-size:.88rem}.snack-tile .snack-price{font-size:1rem}.snack-tile a{font-size:.78rem}.snack-inventory-btn{font-size:.9rem}}
 
+  
+/* DESA v6: postal céntrica compacta en lugar de las dos fotos pequeñas */
+.centro-location{max-width:560px;margin:16px auto 28px;padding:0 16px;text-align:center}
+.centro-location h2{color:#a94312;font-size:clamp(1.15rem,2.5vw,1.5rem);margin:0 0 14px}
+.centro-location figure{margin:0}
+.centro-location img{display:block;width:100%;height:245px;object-fit:cover;border-radius:16px;box-shadow:0 10px 25px #9c481725}
+.centro-location figcaption{font-size:.76rem;color:#856957;margin-top:7px}
+.centro-location-quote{color:#623a22;font-size:1.05rem;font-weight:600;line-height:1.65;margin:14px auto 6px}
+.centro-location-near{color:#7a5d4c;font-size:.86rem;margin:0 0 18px}
+.centro-location-map{display:inline-block;background:#e96b16;color:#fff;text-decoration:none;font-weight:700;border-radius:26px;padding:12px 19px}
+.centro-location-map:hover,.centro-location-map:focus-visible{background:#b8470c}
+.centro-location small{display:block;margin:12px auto 0;color:#8a7667;font-size:.65rem}
+.centro-location small a{color:inherit}
+@media(max-width:600px){.centro-location{max-width:430px}.centro-location img{height:200px}}
+
   </style>
 </head>
 <body>
@@ -98,7 +113,17 @@ body{background:#fff8f0;color:#452b1c}header{background:linear-gradient(110deg,#
   <div class="hero-living"><img src="fotos_alojamientos/centro-living.webp" alt="Living real de Mi Refugio Centro, con sillón y luz natural" fetchpriority="high"><p class="photo-note">Mi Refugio Centro · Humberto Primero 118, Córdoba</p></div>
   <section class="welcome" id="informacion"><span class="eyebrow">TODO A MANO</span><h2>Información útil para tu estadía</h2><p>Consultá los detalles del alojamiento, descubrí Córdoba y encontrá los productos disponibles para vos.</p></section>
 
-  <div class="photo-strip"><figure><img src="fotos_alojamientos/centro-patio.webp" loading="lazy" alt="Patio con dos sillas y mesa"><figcaption>Un rincón para descansar</figcaption></figure><figure><img src="fotos_alojamientos/centro-acceso.webp" loading="lazy" alt="Frente del edificio en Humberto Primero 118"><figcaption>Así reconocés la entrada al edificio</figcaption></figure></div>
+  <section class="centro-location" aria-label="Ubicación de Mi Refugio Centro">
+    <h2>Tu refugio, en el corazón de Córdoba</h2>
+    <figure>
+      <img src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Av._General_Paz_y_9_de_julio.jpg?width=960" loading="lazy" alt="Vista de avenida General Paz cerca de 9 de Julio, en el centro de Córdoba" referrerpolicy="no-referrer">
+      <figcaption>Una postal del centro cordobés · Av. General Paz</figcaption>
+    </figure>
+    <p class="centro-location-quote">Tu espacio para descansar, a pasos del movimiento del centro cordobés.</p>
+    <p class="centro-location-near">Cerca de la zona de Av. Colón y General Paz.</p>
+    <a class="centro-location-map" href="https://www.google.com/maps/dir/?api=1&amp;destination=Humberto+Primero+118%2C+Cordoba%2C+Argentina" target="_blank" rel="noopener noreferrer">📍 Cómo llegar a Mi Refugio Centro</a>
+    <small>Foto: Alakasam (Poiche), <a href="https://commons.wikimedia.org/wiki/File:Av._General_Paz_y_9_de_julio.jpg" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> · CC BY-SA.</small>
+  </section>
   <!-- FAQ -->
   <section class="faq">
     <h2>Preguntas frecuentes</h2>
