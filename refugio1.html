@@ -71,21 +71,24 @@
 /* Identidad naranja cálida y portada real del alojamiento */
 body{background:#fff8f0;color:#452b1c}header{background:linear-gradient(110deg,#b94410,#f08a32)!important}header p{color:#fff8f0!important}.quick-nav{background:#fff3e4}.quick-nav a{color:#a84012}.welcome h2,.shop-heading h2,.gallery h2,.faq h2,.tips h2{color:#a94312}.faq,.gallery,.card{box-shadow:0 8px 24px #ac5a1815}.shop-heading{background:linear-gradient(120deg,#fff0dc,#ffdfb6);padding:24px 16px;border-radius:20px;max-width:1000px}.controls button,.btn{background:#e96b16}.controls button:hover,.btn:hover{background:#b8470c}footer{background:#a94413}.hero-living{max-width:1000px;margin:22px auto 0;padding:0 18px}.hero-living img{width:100%;max-height:480px;object-fit:cover;object-position:center 48%;border-radius:18px;box-shadow:0 16px 35px #9c48172a}.photo-note{font-size:.85rem;color:#7a5d4c;text-align:center;margin:8px 0 20px}.photo-strip{max-width:1000px;margin:0 auto;padding:10px 18px 24px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.photo-strip figure{margin:0}.photo-strip img{width:100%;height:220px;object-fit:cover;border-radius:14px}.photo-strip figcaption{color:#795a45;font-size:.83rem;padding:8px 0}.snack-promo{max-width:1000px;margin:18px auto 0;padding:22px;border-radius:18px;background:#fff1dd;display:flex;justify-content:space-between;align-items:center;gap:20px}.snack-promo strong{color:#a83f0a;font-size:1.1rem}.snack-promo p{margin:7px 0;color:#785743}.snack-promo a{background:#e96b16;color:white;text-decoration:none;padding:13px 18px;border-radius:28px;font-weight:700;white-space:nowrap}.snack-promo a:hover{background:#b8470c} @media(max-width:650px){.photo-strip img{height:150px}.snack-promo{margin:15px;display:block}.snack-promo a{display:inline-block;margin-top:8px}}
 
-/* DESA v3: vidriera de productos, alimentada por el catálogo de Centro */
-.snack-showcase{max-width:1000px;margin:22px auto 14px;padding:24px 20px;background:linear-gradient(130deg,#fff3e3,#ffe2bd);border:1px solid #f6c58e;border-radius:22px;box-sizing:border-box}
-.snack-showcase h2{margin:0 0 8px;color:#a5410d;font-size:clamp(1.4rem,3vw,1.85rem)}
-.snack-showcase .subtitle{color:#6d4a33;margin:0 0 16px;line-height:1.5}
-.snack-stage{display:flex;align-items:center;gap:16px;justify-content:center;min-height:205px;background:#fffdf9;border-radius:16px;padding:14px;box-shadow:0 8px 22px #8b481019}
-.snack-stage img{width:150px;height:160px;object-fit:contain;flex-shrink:0}
-.snack-details{min-width:0;flex:1}.snack-details h3{color:#63351d;font-size:1.2rem;margin:0 0 10px}.snack-price{color:#b54c10;font-size:1.35rem;font-weight:700;margin:0 0 14px}
-.snack-cta{display:inline-block;background:#e96b16;color:#fff;text-decoration:none;border-radius:28px;padding:11px 18px;font-weight:700;box-shadow:0 5px 14px #e96b1640}
-.snack-cta:hover,.snack-cta:focus-visible{background:#b8470c}
+/* DESA v4: carrusel de dos productos por vez, sin alterar catálogo ni pedidos */
+.snack-showcase{max-width:1000px;margin:22px auto 14px;padding:26px 22px;background:linear-gradient(130deg,#fff7ed,#ffe8cc);border:1px solid #f4c695;border-radius:22px;box-sizing:border-box}
+.snack-showcase h2{margin:0 0 8px;color:#a5410d;font-size:clamp(1.4rem,3vw,1.9rem)}
+.snack-showcase .subtitle{color:#6d4a33;margin:0 0 18px;line-height:1.5}
+.snack-stage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;min-height:230px}
+.snack-tile{background:#fff;border-radius:16px;padding:16px 12px;text-align:center;box-shadow:0 8px 22px #8b481012;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+.snack-tile img{width:100%;max-width:160px;height:135px;object-fit:contain}
+.snack-tile h3{color:#63351d;font-size:1.05rem;margin:4px 0 0;line-height:1.3;overflow-wrap:anywhere}
+.snack-tile .snack-price{color:#b54c10;font-size:1.15rem;font-weight:800;margin:0}
+.snack-tile a{color:#a5410d;font-weight:700;text-decoration:none;font-size:.9rem}
+.snack-tile a:hover{text-decoration:underline}
 .snack-carousel-actions{display:flex;align-items:center;justify-content:center;gap:16px;margin:15px 0 8px}
 .snack-arrow{background:#fff;color:#a5410d;border:1px solid #eeb37a;border-radius:50%;height:42px;width:42px;font-size:1.4rem;cursor:pointer}
-.snack-arrow:hover{background:#ffead5}.snack-counter{color:#78523c;font-size:.9rem;min-width:60px;text-align:center}
-.snack-secondary{text-align:center;margin:13px 0 0}.snack-secondary a{color:#a5410d;font-weight:700}
+.snack-arrow:hover{background:#ffead5}.snack-counter{color:#78523c;font-size:.9rem;min-width:80px;text-align:center}
+.snack-inventory-btn{display:block;width:fit-content;max-width:100%;box-sizing:border-box;margin:18px auto 0;padding:14px 23px;border-radius:28px;background:#e96b16;color:#fff;text-decoration:none;font-weight:800;text-align:center;box-shadow:0 5px 14px #e96b1640}
+.snack-inventory-btn:hover,.snack-inventory-btn:focus-visible{background:#b8470c}
 #snack{scroll-margin-top:80px}.menu .card{scroll-margin-top:100px}.menu .card:target{outline:3px solid #e96b16;outline-offset:3px}
-@media(max-width:560px){.snack-showcase{margin:18px 12px;padding:16px 12px}.snack-stage{gap:8px;padding:10px}.snack-stage img{width:108px;height:125px}.snack-details h3{font-size:1rem}.snack-price{font-size:1.12rem}.snack-cta{font-size:.84rem;padding:9px 12px}}
+@media(max-width:560px){.snack-showcase{margin:18px 12px;padding:16px 12px}.snack-stage{gap:9px}.snack-tile{padding:12px 6px}.snack-tile img{height:95px}.snack-tile h3{font-size:.88rem}.snack-tile .snack-price{font-size:1rem}.snack-tile a{font-size:.78rem}.snack-inventory-btn{font-size:.9rem}}
 
   </style>
 </head>
@@ -144,11 +147,10 @@ body{background:#fff8f0;color:#452b1c}header{background:linear-gradient(110deg,#
     <h2>🥤 ¿Te tentaste con algo rico?</h2>
     <p class="subtitle">Conocé nuestras bebidas y snacks. Tocá un producto para verlo en el catálogo de Mi Refugio Centro.</p>
     <div class="snack-stage" id="snack-stage" aria-live="off">
-      <img id="snack-img" alt="Producto destacado" src="" loading="lazy">
-      <div class="snack-details"><h3 id="snack-name">Cargando productos…</h3><p class="snack-price" id="snack-price"></p><a class="snack-cta" id="snack-product-link" href="#snack">Ver producto ↓</a></div>
+      <div class="snack-tile"><h3>Cargando productos…</h3></div>
     </div>
-    <div class="snack-carousel-actions"><button class="snack-arrow" type="button" id="snack-prev" aria-label="Producto anterior">‹</button><span class="snack-counter" id="snack-counter"></span><button class="snack-arrow" type="button" id="snack-next" aria-label="Producto siguiente">›</button></div>
-    <p class="snack-secondary"><a href="#snack">Ver todo el catálogo</a> · <a href="presupuesto.html">Armar mi pedido</a></p>
+    <div class="snack-carousel-actions"><button class="snack-arrow" type="button" id="snack-prev" aria-label="Dos productos anteriores">‹</button><span class="snack-counter" id="snack-counter"></span><button class="snack-arrow" type="button" id="snack-next" aria-label="Dos productos siguientes">›</button></div>
+    <a class="snack-inventory-btn" href="#snack">🛒 Ver inventario y hacer mi pedido</a>
   </section>
   <section class="shop-heading" id="snack"><h2>Snacks y bebidas</h2><p>Elegí algo rico para disfrutar durante tu estadía.</p></section>
   <!-- Menú dinámico -->
@@ -302,7 +304,7 @@ async function cargarProductos() {
       iniciarVidrieraSnacks(productos);
     });
 
-    // Vidriera liviana: reutiliza el CSV que ya carga la tienda, sin nuevas solicitudes.
+    // Carrusel de dos productos: reutiliza el catálogo existente sin alterar stock ni pedidos.
     function iniciarVidrieraSnacks(productos) {
       const stage = document.getElementById('snack-stage');
       const prev = document.getElementById('snack-prev');
@@ -310,34 +312,59 @@ async function cargarProductos() {
       const counter = document.getElementById('snack-counter');
       const disponibles = productos.map((prod, i) => ({...prod, indiceOriginal:i})).filter(p => p.nombre && p.img);
       if (!disponibles.length) {
-        document.getElementById('snack-name').textContent = 'Podés consultar nuestro catálogo';
-        document.getElementById('snack-img').hidden = true;
-        document.getElementById('snack-product-link').textContent = 'Ver catálogo';
+        stage.innerHTML = '<div class="snack-tile"><h3>Consultá nuestro catálogo completo</h3></div>';
         prev.hidden = next.hidden = true;
+        counter.textContent = '';
         return;
       }
       let indice = 0;
       let timer;
       const movimientoReducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      function mostrar() {
-        const prod = disponibles[indice];
-        document.getElementById('snack-img').src = prod.img;
-        document.getElementById('snack-img').alt = prod.nombre;
-        document.getElementById('snack-name').textContent = prod.nombre;
-        document.getElementById('snack-price').textContent = Number.isFinite(prod.precio) ? '$' + prod.precio.toLocaleString('es-AR') : '';
-        document.getElementById('snack-product-link').href = '#producto-' + prod.indiceOriginal;
-        counter.textContent = (indice + 1) + ' / ' + disponibles.length;
+      function crearTarjeta(prod) {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'snack-tile';
+        const img = document.createElement('img');
+        img.src = prod.img;
+        img.alt = prod.nombre;
+        img.loading = 'lazy';
+        const nombre = document.createElement('h3');
+        nombre.textContent = prod.nombre;
+        const precio = document.createElement('p');
+        precio.className = 'snack-price';
+        precio.textContent = Number.isFinite(prod.precio) ? '$' + prod.precio.toLocaleString('es-AR') : '';
+        const link = document.createElement('a');
+        link.href = '#producto-' + prod.indiceOriginal;
+        link.textContent = 'Ver en catálogo ↓';
+        tarjeta.append(img, nombre, precio, link);
+        return tarjeta;
       }
-      function detener(){ if(timer){clearInterval(timer);timer=null;} }
-      function iniciar(){ detener(); if(!movimientoReducido && !document.hidden){timer=setInterval(()=>{indice=(indice+1)%disponibles.length;mostrar()},6000)} }
-      function avanzar(paso){indice=(indice+paso+disponibles.length)%disponibles.length;mostrar();iniciar()}
-      prev.addEventListener('click',()=>avanzar(-1));
-      next.addEventListener('click',()=>avanzar(1));
-      stage.addEventListener('mouseenter',detener);
-      stage.addEventListener('mouseleave',iniciar);
-      stage.addEventListener('focusin',detener);
-      stage.addEventListener('focusout',iniciar);
-      document.addEventListener('visibilitychange',()=>document.hidden?detener():iniciar());
+      function mostrar() {
+        stage.replaceChildren();
+        const cantidad = Math.min(2, disponibles.length);
+        for (let i = 0; i < cantidad; i++) {
+          stage.appendChild(crearTarjeta(disponibles[(indice+i) % disponibles.length]));
+        }
+        counter.textContent = (indice + 1) + '–' + Math.min(indice + cantidad, disponibles.length) + ' / ' + disponibles.length;
+      }
+      function detener() { if (timer) { clearInterval(timer); timer = null; } }
+      function iniciar() {
+        detener();
+        if (!movimientoReducido && !document.hidden && disponibles.length > 2) {
+          timer = setInterval(() => { indice = (indice + 2) % disponibles.length; mostrar(); }, 6000);
+        }
+      }
+      function avanzar(paso) {
+        indice = (indice + paso * 2 + disponibles.length) % disponibles.length;
+        mostrar(); iniciar();
+      }
+      prev.addEventListener('click', () => avanzar(-1));
+      next.addEventListener('click', () => avanzar(1));
+      stage.addEventListener('mouseenter', detener);
+      stage.addEventListener('mouseleave', iniciar);
+      stage.addEventListener('focusin', detener);
+      stage.addEventListener('focusout', iniciar);
+      document.addEventListener('visibilitychange', () => document.hidden ? detener() : iniciar());
+      prev.hidden = next.hidden = disponibles.length <= 2;
       mostrar(); iniciar();
     }
   </script>
